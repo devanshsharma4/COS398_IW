@@ -1,0 +1,181 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+}
+
+.timer-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#time-display {
+    font-size: 72px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+button {
+    padding: 10px;
+    font-size: 16px;
+    margin: 5px;
+}
+
+.modal {
+    display: none; /* hidden by default */
+    position: fixed;
+    z-index: 1; /* sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* full width and height */
+    height: 100%;
+    overflow: auto; /* enable scrolling if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%; /* can change this */
+    max-width: 400px; /* Maximum width */
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#customize-btn {
+    /* Your styles here (e.g., padding, font size) */
+    margin-top: 20px;
+}
+
+/* Add some padding and margin to inputs and labels */
+label, input[type=number] {
+    margin: 10px 0;
+    padding: 5px;
+    display: block;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: start; /* Aligns items at the top */
+}
+
+.todo-container {
+    margin-right: 100px; /* Spacing between list and timer */
+    min-width: 200px;
+    max-width: 300px; /* Set a max-width for the todo list container */
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-item {
+    display: flex;
+    border: none;
+    background-color: transparent;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-bottom: 1px solid #ccc; /* Slight underline to indicate editable area */
+    cursor: text;
+}
+
+.todo-text {
+    flex-grow: 1; /* Allows the text div to fill the space */
+    border: none;
+    background-color: transparent;
+    padding: 5px;
+    cursor: text;
+}
+
+.todo-item:focus {
+    background-color: #eef4ff; /* Slight background color on focus */
+    outline: none; /* Remove the default focus outline */
+}
+
+.app-container {
+    display: flex;
+}
+
+/* Styles for the complete button */
+.complete-btn {
+    margin-right: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: black;
+    font-size: 16px; /* You can adjust the size as needed */
+}
+
+.complete-btn.completed {
+    background-color: lightblue;
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+    background-color: transparent;
+    color: #aaa;
+}
+
+/* Ensure Add Item button stays at the bottom */
+#add-todo-btn {
+    margin-top: auto;
+}
+
+/* Flex container for inline elements like todo items and buttons */
+.flex-row {
+    display: flex;
+    align-items: center;
+}
+
+/* Strikethrough class for completed text */
+.strike-through {
+    text-decoration: line-through;
+}
+
+#set-goal-btn {
+    margin-top: 10px; /* Space from Add Item button */
+    /* Additional styling for the button */
+}
+
+.goal-container {
+    display: none; /* Hidden by default */
+    text-align: center;
+    margin-bottom: 20px; /* Spacing from the timer */
+}
+
+/* When a goal is set, this class will be toggled to display the goal */
+.goal-set {
+    display: block;
+}
+
+
+
+
+
+
+
