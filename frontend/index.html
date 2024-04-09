@@ -4,9 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pomodoro Timer</title>
-    <link rel="stylesheet" href="frontend/css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <!-- Registration Modal -->
+    <button id="register-link">Register</button>
+    <div id="registration-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Register</h2>
+            <form id="registration-form">
+                <input type="text" id="register-username" placeholder="Username" required>
+                <input type="email" id="register-email" placeholder="Email" required>
+                <input type="password" id="register-password" placeholder="Password" required>
+                <button type="submit">Register</button>
+            </form>
+            <div id="register-error" style="color: red;"></div> <!-- Element to display error messages -->
+        </div>
+    </div>
     <div class="app-container">
         <div id="todo-list" class="todo-container">
             <div>
@@ -89,8 +104,33 @@
                 <button id="pause-btn">Pause</button>
                 <button id="reset-btn">Reset</button>
             </div>
+
+            <!-- Upload Picture Button -->
+            <button id="upload-pic-btn">Upload Picture</button>
+
+            <!-- Upload Picture Modal -->
+            <div id="upload-pic-modal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h2>Upload a Picture</h2>
+                    <form id="upload-pic-form" enctype="multipart/form-data">
+                        <label for="goal-input">Goal Completed:</label>
+                        <input type="text" id="goal-input" name="goal" required placeholder="Type your goal here">
+                        <label for="pic-upload">Picture:</label>
+                        <input type="file" id="pic-upload" name="picture" required>
+                        <button type="submit">Submit</button>
+                     </form>
+                </div>
+            </div>
+
         </div>
+        <!-- Container for uploaded images -->
+        <div id="image-gallery" class="image-gallery">
+            <h3>Recent Goals</h3>
+            <!-- Images will be dynamically inserted here -->
+        </div>
+        
     </div>
-    <script src="frontend/js/app.js"></script>
+    <script src="./js/app.js"></script>
 </body>
 </html>
