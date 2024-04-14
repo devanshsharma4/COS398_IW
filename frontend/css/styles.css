@@ -5,15 +5,21 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f0f0f0;
+    background-color: #E37575;
 }
 
 .timer-container {
-    text-align: center;
+    background-color: #f8cdd1; /* Adjust the color to match your desired pink shade */
+    border-radius: 25px; /* Gives the rounded corners */
+    padding: 20px; /* Adjust the padding for spacing inside the container */
+    text-align: center; /* Center the text */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    max-width: 400px; /* Maximum width of the container */
+    margin: auto; /* Center the container */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 20px;
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Center children vertically */
+    align-items: center; /* Center children horizontally */
 }
 
 .image-gallery{
@@ -27,9 +33,9 @@ body, html {
 }
 
 #time-display {
-    font-size: 72px;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    font-size: 5em; /* Larger font size for the timer */
+    color: #333; /* Darker font color for contrast */
+    margin: 20px 0; /* Spacing above and below the timer */
 }
 
 .button-container {
@@ -57,19 +63,64 @@ button {
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+    background-color: #f8cdd1; /* Light pink background */
+    margin: 15% auto; /* Center the modal */
     padding: 20px;
-    border: 1px solid #888;
-    width: 90%; /* can change this */
+    border: none; /* Remove border */
+    width: 80%; /* Adjust width as needed */
     max-width: 400px; /* Maximum width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    border-radius: 25px; /* Rounded corners */
+    text-align: center; /* Center the text inside modal */
+    color: #000; /* Text color */
+    position: relative; /* Needed to position the close button absolutely within the modal */
+}
+
+/* Style the form inputs */
+.modal-content input[type="number"] {
+    width: 80%; /* Width of input fields */
+    padding: 10px; /* Padding inside input fields */
+    margin: 10px 0; /* Margin around inputs */
+    border: 1px solid #ccc; /* Border around input */
+    border-radius: 25px; /* Rounded corners of input fields */
+    box-sizing: border-box; /* Include padding and border in the element's width */
+    margin-left: auto; /* Center align the input fields */
+    margin-right: auto; /* Center align the input fields */
+}
+
+/* Styling for the modal labels for consistency */
+.modal-content label {
+    display: block; /* Each label on a new line */
+    margin-top: 10px; /* Space above each label */
+    font-size: 1em; /* Font size */
+}
+
+/* Adjust the modal title */
+.modal-content h2 {
+    font-size: 1.5em; /* Larger font size for title */
+    margin-bottom: 20px; /* Space below the title */
+}
+
+/* Style the apply button */
+#apply-custom-timers {
+    background-color: #e7a1a2; /* Light pink background */
+    border: none; /* Remove border */
+    border-radius: 25px; /* Rounded corners */
+    padding: 10px 20px; /* Padding inside the button */
+    margin-top: 20px; /* Margin above the button */
+    color: white; /* Text color */
+    font-weight: bold; /* Bold font */
+    box-shadow: none; /* No shadow */
 }
 
 .close-btn {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+    color: #000; /* Black color */
+    position: absolute; /* Position it in the top-right corner of the modal */
+    top: 10px; /* Distance from the top */
+    font-size: 1.5em; /* Larger font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    right: 20px; /* Reset right positioning */
+    left: auto; /* Distance from the left */
 }
 
 .close-btn:hover,
@@ -98,29 +149,32 @@ label, input[type=number] {
 }
 
 .todo-container {
-    margin-right: 100px; /* Spacing between list and timer */
-    min-width: 200px;
-    max-width: 300px; /* Set a max-width for the todo list container */
-    display: flex;
-    flex-direction: column;
+    background-color: #f8cdd1; /* Adjust the color to match your desired pink shade */
+    border-radius: 25px; /* Gives the rounded corners */
+    padding: 20px; /* Adjust the padding for spacing inside the container */
+    max-width: 300px; /* Maximum width of the container */
+    margin: auto; /* Center the container */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: adds a subtle shadow for depth */
+    text-align: center; /* Center the text */
 }
 
 .todo-item {
     display: flex;
-    border: none;
+    border: none; 
     background-color: transparent;
-    margin-bottom: 5px;
-    padding: 5px;
-    border-bottom: 1px solid #ccc; /* Slight underline to indicate editable area */
+    margin-bottom: 1px;
+    padding: 1px;
     cursor: text;
 }
 
 .todo-text {
     flex-grow: 1; /* Allows the text div to fill the space */
     border: none;
+    border-bottom: none;
     background-color: transparent;
     padding: 5px;
     cursor: text;
+    text-align: left;
 }
 
 .todo-item:focus {
@@ -141,7 +195,7 @@ label, input[type=number] {
     border: none;
     background: none;
     cursor: pointer;
-    color: black;
+    background-color: transparent;
     font-size: 16px; /* You can adjust the size as needed */
 }
 
@@ -156,8 +210,27 @@ label, input[type=number] {
 }
 
 /* Ensure Add Item button stays at the bottom */
-#add-todo-btn {
-    margin-top: auto;
+#add-todo-btn,
+#set-goal-btn,
+#pomodoro-btn,
+#customize-btn,
+#short-break-btn,
+#long-break-btn,
+#start-btn,
+#pause-btn,
+#reset-btn,
+#upload-pic-btn {
+    background-color: #e7a1a2; /* Adjust the color to match your desired button shade */
+    border: none;
+    border-radius: 20px; /* Rounded corners for buttons */
+    padding: 10px 20px; /* Padding inside the buttons */
+    margin-top: 10px; /* Space above the buttons */
+    cursor: pointer;
+    color: #ffffff; /* Text color */
+    font-weight: bold;
+    text-transform: uppercase; /* Optional: Uppercase button text */
+    outline: none; /* Removes the outline */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional: adds a subtle shadow for depth */
 }
 
 /* Flex container for inline elements like todo items and buttons */
@@ -171,11 +244,6 @@ label, input[type=number] {
     text-decoration: line-through;
 }
 
-#set-goal-btn {
-    margin-top: 10px; /* Space from Add Item button */
-    /* Additional styling for the button */
-}
-
 .goal-container {
     display: none; /* Hidden by default */
     text-align: center;
@@ -187,9 +255,39 @@ label, input[type=number] {
     display: block;
 }
 
+/* Additional styles to make the editable text look more like a label */
+.todo-text[contenteditable="true"] {
+    display: inline-block;
+    margin: 0 10px;
+    min-width: 150px; /* Ensures the editable area has a default width */
+}
+
+/* Hover effect for buttons */
+#add-todo-btn:hover,
+#set-goal-btn:hover,
+#pomodoro-btn:hover,
+#customize-btn:hover,
+#short-break-bt:hover,
+#long-break-btn:hover,
+#start-btn:hover,
+#pause-btn:hover,
+#reset-btn:hover,
+#upload-pic-btn:hover {
+    background-color: #d9898a; /* Darker shade on hover */
+}
+
+/* Focus effect for contenteditable */
+.todo-text[contenteditable="true"]:focus {
+    border-bottom: 1px solid #000; /* Darker underline on focus */
+}
 
 
-
+/* Adjustments for the title of the to-do list */
+.todo-container > div:first-child {
+    font-size: 1.5em; /* Larger text for the title */
+    font-weight: bold;
+    margin-bottom: 20px; /* Spacing after the title */
+}
 
 
 
