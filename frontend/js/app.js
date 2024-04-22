@@ -1,59 +1,136 @@
-function fetchAndDisplayImages() {
-    fetch('http://localhost:3000/api/images') // Adjust URL to match your backend endpoint
-        .then(response => response.json())
-        .then(images => {
-            const gallery = document.getElementById('image-gallery');
-            gallery.innerHTML = ''; // Clear existing images
-            images.forEach(image => {
-                const imgElement = document.createElement('img');
-                imgElement.src = image.imagePath;
-                imgElement.alt = 'User uploaded image';
-                
-                const caption = document.createElement('div');
-                caption.textContent = image.goal;
-                
-                const container = document.createElement('div');
-                container.appendChild(imgElement);
-                container.appendChild(caption);
-
-                gallery.appendChild(container);
-            });
-        })
-        .catch(error => console.error('Error fetching images:', error));
-}
-
-function checkAuthState() {
-    const token = sessionStorage.getItem('token');
-    const loginBtn = document.getElementById('login-btn');
-    const registerBtn = document.getElementById('register-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    if (token) {
-        loginBtn.style.display = 'none';
-        registerBtn.style.display = 'none';
-        logoutBtn.style.display = 'block';
-    } else {
-        loginBtn.style.display = 'block';
-        registerBtn.style.display = 'block';
-        logoutBtn.style.display = 'none';
-    }
-}
-
-function handleLogin(event) {
-    event.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    // Perform fetch and process login
-}
-
-function handleLogout() {
-    sessionStorage.removeItem('token');
-    checkAuthState();
-}
-
-
-
 document.addEventListener('DOMContentLoaded', (event) => {
+    // Centralized function definitions
+    function fetchAndDisplayImages() {
+        fetch('http://localhost:3000/api/images')
+            .then(response => response.json())
+            .then(images => displayImages(images))
+            .catch(error => console.error('Error fetching images:', error));
+    }
+
+    function displayImages(images) {
+        const gallery = document.getElementById('image-gallery');
+        gallery.innerHTML = '';
+        images.forEach(image => {
+            const imgElement = document.createElement('img');
+            imgElement.src = image.imagePath;
+            imgElement.alt = 'User uploaded image';
+            
+            const caption = document.createElement('div');
+            caption.textContent = image.goal;
+            
+            const container = document.createElement('div');
+            container.appendChild(imgElement);
+            container.appendChild(caption);
+
+            gallery.appendChild(container);
+        });
+    }
+
+    function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                sessionStorage.setItem('token', data.token);
+                document.getElementById('login-modal').style.display = 'none';
+                checkAuthState();
+            } else {
+                document.getElementById('login-error').textContent = data.error;
+            }
+        })
+        .catch(error => {
+            console.error('Login failed:', error);
+        });
+    }
+
+    function checkAuthState() {
+        const token = sessionStorage.getItem('token');
+        const loginBtn = document.getElementById('login-btn');
+        const registerBtn = document.getElementById('register-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        if (token) {
+            loginBtn.style.display = 'none';
+            registerBtn.style.display = 'none';
+            logoutBtn.style.display = 'block';
+        } else {
+            loginBtn.style.display = 'block';
+            registerBtn.style.display = 'block';
+            logoutBtn.style.display = 'none';
+        }
+    }
+
+    function handleLogout() {
+        sessionStorage.removeItem('token');
+        checkAuthState();
+    }
+
+    function initializeTimer() {
+        const timerDisplay = document.getElementById('time-display');
+        const startBtn = document.getElementById('start-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        let countdown;
+        let isTimerRunning = false;
+        let pomodoroTime = 25 * 60;
+        let timeLeft = pomodoroTime;
+
+        startBtn.addEventListener('click', () => {
+            if (!isTimerRunning) {
+                startTimer(timeLeft);
+                isTimerRunning = true;
+            }
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            clearInterval(countdown);
+            isTimerRunning = false;
+        });
+
+        resetBtn.addEventListener('click', () => {
+            clearInterval(countdown);
+            displayTimeLeft(pomodoroTime);
+            timeLeft = pomodoroTime;
+            isTimerRunning = false;
+        });
+
+        function startTimer(seconds) {
+            clearInterval(countdown);
+            const now = Date.now();
+            const then = now + seconds * 1000;
+            displayTimeLeft(seconds);
+
+            countdown = setInterval(() => {
+                timeLeft = Math.round((then - Date.now()) / 1000);
+                if (timeLeft < 0) {
+                    clearInterval(countdown);
+                    return;
+                }
+                displayTimeLeft(timeLeft);
+            }, 1000);
+        }
+
+        function displayTimeLeft(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainderSeconds = seconds % 60;
+            const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+            timerDisplay.textContent = display;
+        }
+    }
+
+    // Initialize all components
+    initializeTimer();
+    checkAuthState();
+    fetchAndDisplayImages();
+
     document.getElementById('login-form').addEventListener('submit', handleLogin);
     document.getElementById('logout-btn').addEventListener('click', handleLogout);
     checkAuthState();
@@ -140,10 +217,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 document.getElementById('login-modal').style.display = 'none';
                 // Update UI to reflect logged in state
                 updateUIForLoggedInUser();
-            } else {
+            } // else {
                 // Show error message
-                document.getElementById('login-error').textContent = data.error;
-            }
+                // document.getElementById('login-error').textContent = data.error;
+            // }
         })
         .catch(error => {
             console.error('Login failed:', error);
@@ -320,7 +397,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     });
 
-    document.getElementById('register-link').addEventListener('click', () => {
+    document.getElementById('register-btn').addEventListener('click', () => {
         document.getElementById('registration-modal').style.display = 'block';
     });
 
