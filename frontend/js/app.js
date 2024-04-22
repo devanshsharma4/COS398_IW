@@ -22,8 +22,41 @@ function fetchAndDisplayImages() {
         .catch(error => console.error('Error fetching images:', error));
 }
 
+function checkAuthState() {
+    const token = sessionStorage.getItem('token');
+    const loginBtn = document.getElementById('login-btn');
+    const registerBtn = document.getElementById('register-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (token) {
+        loginBtn.style.display = 'none';
+        registerBtn.style.display = 'none';
+        logoutBtn.style.display = 'block';
+    } else {
+        loginBtn.style.display = 'block';
+        registerBtn.style.display = 'block';
+        logoutBtn.style.display = 'none';
+    }
+}
+
+function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    // Perform fetch and process login
+}
+
+function handleLogout() {
+    sessionStorage.removeItem('token');
+    checkAuthState();
+}
+
+
 
 document.addEventListener('DOMContentLoaded', (event) => {
+    document.getElementById('login-form').addEventListener('submit', handleLogin);
+    document.getElementById('logout-btn').addEventListener('click', handleLogout);
+    checkAuthState();
     fetchAndDisplayImages();
 
     let countdown;
@@ -78,6 +111,44 @@ document.addEventListener('DOMContentLoaded', (event) => {
         displayTimeLeft(timeLeft);
         isTimerRunning = false;
     }
+
+    document.getElementById('logout-btn').addEventListener('click', function(e) {
+        // Clear session storage or cookies
+        sessionStorage.removeItem('token');
+        // Update UI to reflect logged out state
+        checkAuthState();
+        // Optionally, make a request to the backend to invalidate the token/session
+    });
+
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+    
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Store the token in localStorage or sessionStorage
+                sessionStorage.setItem('token', data.token);
+                // Close the modal
+                document.getElementById('login-modal').style.display = 'none';
+                // Update UI to reflect logged in state
+                updateUIForLoggedInUser();
+            } else {
+                // Show error message
+                document.getElementById('login-error').textContent = data.error;
+            }
+        })
+        .catch(error => {
+            console.error('Login failed:', error);
+        });
+    });
     
 
 
@@ -149,11 +220,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         customizeModal.style.display = 'block';
     });
     
-    
-    
-    // Add event listener to the Add Item button
-    addTodoBtn.addEventListener('click', addTodoItem);
-    
+
     // Function to add a new to-do item
     function addTodoItem() {
         const todoList = document.getElementById('todo-list');
@@ -193,17 +260,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.querySelectorAll('.complete-btn').forEach(btn => {
         btn.addEventListener('click', completeTodoItem);
     });
-    
-    // Ensure this code is at the end of your JS file to avoid hoisting issues
-    document.addEventListener('DOMContentLoaded', (event) => {
-        // Add event listener to the Add Item button
-        const addTodoBtn = document.getElementById('add-todo-btn');
-        addTodoBtn.addEventListener('click', addTodoItem);
-    
-        // Initial setup to mark existing items as complete
-        document.querySelectorAll('.complete-btn').forEach(btn => {
-            btn.addEventListener('click', completeTodoItem);
-        });
+
+
+    // Initial setup to mark existing items as complete
+    document.querySelectorAll('.complete-btn').forEach(btn => {
+        btn.addEventListener('click', completeTodoItem);
     });
     
     // Event listener to open the goal modal

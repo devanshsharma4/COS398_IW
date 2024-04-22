@@ -8,6 +8,31 @@ body, html {
     background-color: #E37575;
 }
 
+.header {
+    width: 100%;
+    padding: 10px 20px; /* Adjust as needed for spacing */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds a subtle shadow for depth */
+    background: #f8cdd1; /* Adjust the color to match your design */
+    position: fixed; /* Makes the header stick to the top */
+    top: 0; /* Aligns to the top */
+    z-index: 1000; /* Ensures the header is above other content */
+}
+
+.header-button {
+    margin-right: 10px; /* Space between buttons */
+    padding: 8px 16px;
+    background-color: #f8cdd1; /* Light pink background */
+    color: white;
+    border: none;
+    border-radius: 20px; /* Rounded corners for buttons */
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.header-button:hover {
+    background-color: #e7a1a2; /* Slightly darker pink on hover */
+}
+
 .timer-container {
     background-color: #f8cdd1; /* Adjust the color to match your desired pink shade */
     border-radius: 25px; /* Gives the rounded corners */
@@ -77,7 +102,10 @@ button {
 }
 
 /* Style the form inputs */
-.modal-content input[type="number"] {
+.modal-content input[type="number"],
+.modal-content input[type="text"],
+.modal-content input[type="email"],
+.modal-content input[type="password"]{
     width: 80%; /* Width of input fields */
     padding: 10px; /* Padding inside input fields */
     margin: 10px 0; /* Margin around inputs */
@@ -99,6 +127,22 @@ button {
 .modal-content h2 {
     font-size: 1.5em; /* Larger font size for title */
     margin-bottom: 20px; /* Space below the title */
+}
+
+/* Button styles */
+.modal-content button {
+    width: auto; /* Adjust width as needed */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #e7a1a2; /* Adjust the color to match your desired button shade */
+    color: #ffffff; /* Text color */
+    text-transform: uppercase; /* Uppercase text */
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Style the apply button */
@@ -187,6 +231,7 @@ label, input[type=number] {
     justify-content: space-around; /* Adjust as needed */
     align-items: flex-start; /* Align items at the top */
     gap: 20px; /* Creates space between flex items, adjust as needed */
+    padding-top: 60px; /* Add padding to top to account for fixed header height */
 }
 
 /* Styles for the complete button */
@@ -209,17 +254,7 @@ label, input[type=number] {
     color: #aaa;
 }
 
-/* Ensure Add Item button stays at the bottom */
-#add-todo-btn,
-#set-goal-btn,
-#pomodoro-btn,
-#customize-btn,
-#short-break-btn,
-#long-break-btn,
-#start-btn,
-#pause-btn,
-#reset-btn,
-#upload-pic-btn {
+.rounded-pink-btn {
     background-color: #e7a1a2; /* Adjust the color to match your desired button shade */
     border: none;
     border-radius: 20px; /* Rounded corners for buttons */
@@ -231,6 +266,11 @@ label, input[type=number] {
     text-transform: uppercase; /* Optional: Uppercase button text */
     outline: none; /* Removes the outline */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional: adds a subtle shadow for depth */
+}
+
+/* Hover effect for buttons */
+.rounded-pink-btn:hover {
+    background-color: #d9898a; /* Darker shade on hover */
 }
 
 /* Flex container for inline elements like todo items and buttons */
@@ -245,9 +285,18 @@ label, input[type=number] {
 }
 
 .goal-container {
-    display: none; /* Hidden by default */
+    background-color: #a2e4b8; /* Light green background */
+    color: #2f4f4f; /* Dark green text color */
+    padding: 10px 20px;
+    border-radius: 15px; /* Rounded corners */
+    margin: 20px 0; /* Space above and below */
+    font-size: 0.9em; /* Smaller text */
     text-align: center;
-    margin-bottom: 20px; /* Spacing from the timer */
+    display: none; /* Start as hidden */
+    width: 80%; /* Adjust width as needed */
+    margin-left: auto; /* Center the div */
+    margin-right: auto; /* Center the div */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Optional: adds a subtle shadow for depth */
 }
 
 /* When a goal is set, this class will be toggled to display the goal */
@@ -260,20 +309,6 @@ label, input[type=number] {
     display: inline-block;
     margin: 0 10px;
     min-width: 150px; /* Ensures the editable area has a default width */
-}
-
-/* Hover effect for buttons */
-#add-todo-btn:hover,
-#set-goal-btn:hover,
-#pomodoro-btn:hover,
-#customize-btn:hover,
-#short-break-bt:hover,
-#long-break-btn:hover,
-#start-btn:hover,
-#pause-btn:hover,
-#reset-btn:hover,
-#upload-pic-btn:hover {
-    background-color: #d9898a; /* Darker shade on hover */
 }
 
 /* Focus effect for contenteditable */

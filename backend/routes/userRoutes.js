@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/user.js'); // Adjust the path to your User model
+const jwt = require('jsonwebtoken');
 const {body, validationResult} = require('express-validator');
 
 const router = express.Router(); // Use Router
@@ -29,5 +30,24 @@ router.post('/register',
         res.status(400).send('Error creating user');
     }
 });
+
+// Add a POST route for login
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+        return res.status(401).json({ error: 'Login failed' });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (isMatch) {
+        // User matched, create JWT payload
+        const payload = { id: user.id, username: user.username };
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 });
+        res.json({ success: true, token: `Bearer ${token}` });
+    } else {
+        res.status(401).json({ error: 'Password incorrect' });
+    }
+});
+
 
 module.exports = router; // Export the router
