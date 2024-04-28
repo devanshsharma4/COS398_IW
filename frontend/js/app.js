@@ -1,142 +1,138 @@
-document.addEventListener('DOMContentLoaded', (event) => {
-    // Centralized function definitions
-    function fetchAndDisplayImages() {
-        fetch('http://localhost:3000/api/images')
-            .then(response => response.json())
-            .then(images => displayImages(images))
-            .catch(error => console.error('Error fetching images:', error));
-    }
+function fetchAndDisplayImages() {
+    
+    fetch('http://localhost:3000/api/images')
 
-    function displayImages(images) {
-        const gallery = document.getElementById('image-gallery');
-        gallery.innerHTML = '';
-        images.forEach(image => {
-            const imgElement = document.createElement('img');
-            imgElement.src = image.imagePath;
-            imgElement.alt = 'User uploaded image';
-            
-            const caption = document.createElement('div');
-            caption.textContent = image.goal;
-            
-            const container = document.createElement('div');
-            container.appendChild(imgElement);
-            container.appendChild(caption);
-
-            gallery.appendChild(container);
-        });
-    }
-
-    function handleLogin(event) {
-        event.preventDefault();
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-
-        fetch('http://localhost:3000/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        })
         .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                sessionStorage.setItem('token', data.token);
-                document.getElementById('login-modal').style.display = 'none';
-                checkAuthState();
-            } else {
-                document.getElementById('login-error').textContent = data.error;
-            }
-        })
-        .catch(error => {
-            console.error('Login failed:', error);
-        });
-    }
+        .then(images => displayImages(images))
+        .catch(error => console.error('Error fetching images:', error));
 
-    function checkAuthState() {
-        const token = sessionStorage.getItem('token');
-        const loginBtn = document.getElementById('login-btn');
-        const registerBtn = document.getElementById('register-btn');
-        const logoutBtn = document.getElementById('logout-btn');
+        /*
+        // hard coding an example of image upload
+        var img = document.createElement('img'); 
+        img.imagePath = '../backend/uploads/1714069297986.jpeg'; 
+        displayImages([img])
+        */
+}
 
-        if (token) {
+function displayImages(images) {
+    console.log(images);
+    const gallery = document.getElementById('image-gallery');
+    gallery.innerHTML = '<h3>Recent Goals</h3>';
+    images.forEach(image => {
+        console.log(image)
+        const imgElement = document.createElement('img');
+        imgElement.src = image.imagePath;
+        imgElement.alt = 'User uploaded image';
+        
+        const caption = document.createElement('div');
+        caption.textContent = image.goal;
+        
+        const container = document.createElement('div');
+        container.appendChild(imgElement);
+        container.appendChild(caption);
+
+        gallery.appendChild(container);
+    });
+}
+
+
+function checkAuthState() {
+    const token = sessionStorage.getItem('token');
+    const logoutBtn = document.getElementById('logout-btn');
+    const loginBtn = document.getElementById('login-btn');
+    const registerBtn = document.getElementById('register-btn');
+
+    if (token) {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            logoutBtn.style.display = 'block';
             loginBtn.style.display = 'none';
             registerBtn.style.display = 'none';
-            logoutBtn.style.display = 'block';
-        } else {
-            loginBtn.style.display = 'block';
-            registerBtn.style.display = 'block';
-            logoutBtn.style.display = 'none';
+        } catch (error) {
+            console.error('Error parsing the token:', error);
+            sessionStorage.removeItem('token'); // Handle corrupted token
         }
+    } else {
+        logoutBtn.style.display = 'none';
+        loginBtn.style.display = 'block';
+        registerBtn.style.display = 'block';
     }
+}
 
-    function handleLogout() {
-        sessionStorage.removeItem('token');
-        checkAuthState();
-    }
+function initializeTimer() {
+    const timerDisplay = document.getElementById('time-display');
+    const startBtn = document.getElementById('start-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    let countdown;
+    let isTimerRunning = false;
+    let pomodoroTime = 25 * 60;
+    let timeLeft = pomodoroTime;
 
-    function initializeTimer() {
-        const timerDisplay = document.getElementById('time-display');
-        const startBtn = document.getElementById('start-btn');
-        const pauseBtn = document.getElementById('pause-btn');
-        const resetBtn = document.getElementById('reset-btn');
-        let countdown;
-        let isTimerRunning = false;
-        let pomodoroTime = 25 * 60;
-        let timeLeft = pomodoroTime;
+    startBtn.addEventListener('click', () => {
+        if (!isTimerRunning) {
+            startTimer(timeLeft);
+            isTimerRunning = true;
+        }
+    });
 
-        startBtn.addEventListener('click', () => {
-            if (!isTimerRunning) {
-                startTimer(timeLeft);
-                isTimerRunning = true;
+    pauseBtn.addEventListener('click', () => {
+        clearInterval(countdown);
+        isTimerRunning = false;
+    });
+
+    resetBtn.addEventListener('click', () => {
+        clearInterval(countdown);
+        displayTimeLeft(pomodoroTime);
+        timeLeft = pomodoroTime;
+        isTimerRunning = false;
+    });
+
+    function startTimer(seconds) {
+        clearInterval(countdown);
+        const now = Date.now();
+        const then = now + seconds * 1000;
+        displayTimeLeft(seconds);
+
+        countdown = setInterval(() => {
+            timeLeft = Math.round((then - Date.now()) / 1000);
+            if (timeLeft < 0) {
+                clearInterval(countdown);
+                return;
             }
-        });
-
-        pauseBtn.addEventListener('click', () => {
-            clearInterval(countdown);
-            isTimerRunning = false;
-        });
-
-        resetBtn.addEventListener('click', () => {
-            clearInterval(countdown);
-            displayTimeLeft(pomodoroTime);
-            timeLeft = pomodoroTime;
-            isTimerRunning = false;
-        });
-
-        function startTimer(seconds) {
-            clearInterval(countdown);
-            const now = Date.now();
-            const then = now + seconds * 1000;
-            displayTimeLeft(seconds);
-
-            countdown = setInterval(() => {
-                timeLeft = Math.round((then - Date.now()) / 1000);
-                if (timeLeft < 0) {
-                    clearInterval(countdown);
-                    return;
-                }
-                displayTimeLeft(timeLeft);
-            }, 1000);
-        }
-
-        function displayTimeLeft(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainderSeconds = seconds % 60;
-            const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
-            timerDisplay.textContent = display;
-        }
+            displayTimeLeft(timeLeft);
+        }, 1000);
     }
+
+    function displayTimeLeft(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainderSeconds = seconds % 60;
+        const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+        timerDisplay.textContent = display;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    /*
+    document.getElementById('auth-link').addEventListener('click', () => {
+        document.getElementById('auth-modal').style.display = 'block';
+    });
+    */
+
+    // document.getElementById('toggle-register').addEventListener('change', toggleAuthForm);
+
+    // document.getElementById('auth-form').addEventListener('submit', handleAuth);
+
+    document.getElementById('logout-btn').addEventListener('click', handleLogout);
 
     // Initialize all components
     initializeTimer();
     checkAuthState();
     fetchAndDisplayImages();
 
-    document.getElementById('login-form').addEventListener('submit', handleLogin);
-    document.getElementById('logout-btn').addEventListener('click', handleLogout);
-    checkAuthState();
-    fetchAndDisplayImages();
+    console.log('STARTED');
 
-    let countdown;
+   
     const timerDisplay = document.getElementById('time-display');
     const startBtn = document.getElementById('start-btn');
     const pauseBtn = document.getElementById('pause-btn');
@@ -148,17 +144,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     const customizeBtn = document.getElementById('customize-btn');
     const customizeModal = document.getElementById('customize-modal');
-    const closeBtn = document.getElementsByClassName('close-btn')[0];
-    const customTimersForm = document.getElementById('custom-timers-form');
     const applyCustomTimersBtn = document.getElementById('apply-custom-timers');
+
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+
+    loginForm.addEventListener('submit', handleLogin);
+    registerForm.addEventListener('submit', handleRegistration);
 
     let isTimerRunning = false;
     const pomodoroTime = 25 * 60; // 25 minutes in seconds
     let timeLeft = pomodoroTime;
 
     function timer(seconds) {
-        clearInterval(countdown);
-    
         const now = Date.now();
         const then = now + seconds * 1000;
         displayTimeLeft(seconds);
@@ -189,6 +187,92 @@ document.addEventListener('DOMContentLoaded', (event) => {
         isTimerRunning = false;
     }
 
+    function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+    
+        fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Login failed: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.token) {
+                sessionStorage.setItem('token', data.token);
+                document.getElementById('login-modal').style.display = 'none';
+                alert('Login successful!');
+                // Additional code to handle logged-in state
+            } else {
+                document.getElementById('login-error').textContent = 'Login failed: ' + (data.error || 'Unknown error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('login-error').textContent = error.message;
+        });
+    }
+    
+    // Handle registration
+    function handleRegistration(event) {
+        event.preventDefault();
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const confirmPassword = document.getElementById('register-confirm-password').value;
+    
+        // Simple client-side validation for example purposes
+        if (password !== confirmPassword) {
+            document.getElementById('register-error').textContent = "Passwords do not match";
+            return;
+        }
+    
+        fetch('http://localhost:3000/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Registration failed: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.token) {
+                sessionStorage.setItem('token', data.token);
+                document.getElementById('register-modal').style.display = 'none';
+                alert('Registration successful!');
+                // Additional code to handle logged-in state
+            } else {
+                document.getElementById('register-error').textContent = 'Registration failed: ' + (data.error || 'Unknown error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('register-error').textContent = error.message;
+        });
+    }
+    
+    
+    function handleLogout() {
+        sessionStorage.removeItem('token');
+        checkAuthState();
+    }
+
+    document.getElementById('login-btn').addEventListener('click', () => {
+        document.getElementById('login-modal').style.display = 'block';
+    });
+    
+    document.getElementById('register-btn').addEventListener('click', () => {
+        document.getElementById('register-modal').style.display = 'block';
+    });
+
     document.getElementById('logout-btn').addEventListener('click', function(e) {
         // Clear session storage or cookies
         sessionStorage.removeItem('token');
@@ -196,38 +280,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         checkAuthState();
         // Optionally, make a request to the backend to invalidate the token/session
     });
-
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-    
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        
-        fetch('http://localhost:3000/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Store the token in localStorage or sessionStorage
-                sessionStorage.setItem('token', data.token);
-                // Close the modal
-                document.getElementById('login-modal').style.display = 'none';
-                // Update UI to reflect logged in state
-                updateUIForLoggedInUser();
-            } // else {
-                // Show error message
-                // document.getElementById('login-error').textContent = data.error;
-            // }
-        })
-        .catch(error => {
-            console.error('Login failed:', error);
-        });
-    });
-    
-
 
 
     // Attach event listeners to default item checkboxes
@@ -245,6 +297,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             isTimerRunning = true;
         }
     });
+
     
     pauseBtn.addEventListener('click', () => {
         clearInterval(countdown);
@@ -339,11 +392,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 
 
-    // Initial setup to mark existing items as complete
-    document.querySelectorAll('.complete-btn').forEach(btn => {
-        btn.addEventListener('click', completeTodoItem);
-    });
-    
     // Event listener to open the goal modal
     const setGoalBtn = document.getElementById('set-goal-btn');
     const goalModal = document.getElementById('goal-modal');
@@ -377,30 +425,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         goalDisplay.classList.add('goal-set');
     }
     
-    // Registration form logic
-    document.getElementById('registration-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const username = document.getElementById('register-username').value;
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
-        
-        // Your fetch call for registration here
-        // On success, you can close the registration modal and clear the form, or redirect, etc.
-        // On error, display the error message in the 'register-error' div
-    });
     
-    
-    // Event listeners to close modals
-    document.querySelectorAll('.close-btn').forEach(closeButton => {
-        closeButton.addEventListener('click', () => {
-            closeButton.closest('.modal').style.display = 'none';
-        });
-    });
-
-    document.getElementById('register-btn').addEventListener('click', () => {
-        document.getElementById('registration-modal').style.display = 'block';
-    });
-
     // Function to open the upload picture modal
     document.getElementById('upload-pic-btn').addEventListener('click', () => {
         document.getElementById('upload-pic-modal').style.display = 'block';
@@ -408,9 +433,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Function to close the modal
     document.querySelectorAll('.close-btn').forEach(button => {
-        button.onclick = function() {
+        button.addEventListener('click', function() {
             this.closest('.modal').style.display = 'none';
-        };
+        });
     });
 
     // Prevent the default form submission and use FormData to send image
@@ -418,28 +443,35 @@ document.addEventListener('DOMContentLoaded', (event) => {
         e.preventDefault();
 
         const formData = new FormData(this);
+        const token = sessionStorage.getItem('token');
 
-        // Replace URL with your actual endpoint URL
+        if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            formData.append('userId', payload.userId); // Append userId to the form data
+        }
+
         fetch('http://localhost:3000/api/upload', {
-            method: 'POST',
-            body: formData,
+        method: 'POST',
+        // Include the Authorization header with the token
+        headers: { 
+            'Authorization': 'Bearer ' + token
+        },
+        body: formData,
         })
         .then(response => {
-            if (response.ok) {
-                return response.json();
+            if (!response.ok) {
+                throw new Error('Network response was not ok. Status: ' + response.statusText);
             }
-            throw new Error('Network response was not ok.');
+            return response.json();
         })
         .then(data => {
             console.log(data);
-            // Process the response data (e.g., show a success message, close the modal)
             document.getElementById('upload-pic-modal').style.display = 'none';
             fetchAndDisplayImages();
         })
         .catch((error) => {
             console.error('Upload failed:', error);
             alert('Failed to upload image. Please try again.');
-            // Handle errors (e.g., show an error message)
         });
     });
 

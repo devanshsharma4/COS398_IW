@@ -1,3 +1,5 @@
+/* 
+
 const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/user.js'); // Adjust the path to your User model
@@ -51,3 +53,6 @@ router.post('/login', async (req, res) => {
 
 
 module.exports = router; // Export the router
+
+
+*/ 

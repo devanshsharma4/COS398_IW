@@ -3,11 +3,6 @@ const sequelize = require('../config/database.js'); // Adjust the path as necess
 
 const User = sequelize.define('user', {
     // Define attributes
-    username: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
-    },
     email: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -17,7 +12,6 @@ const User = sequelize.define('user', {
         type: Sequelize.STRING,
         allowNull: false,
     }
-    // You can add more attributes like username, etc.
 });
 
 module.exports = User;

@@ -13,10 +13,10 @@ const Image = sequelize.define('image', {
     },
     userId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: 'users',
-            key: 'id'
+            key: 'email'
         }
     }
 }, {
