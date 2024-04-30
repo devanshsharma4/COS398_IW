@@ -12,6 +12,7 @@ function fetchAndDisplayImages() {
         img.imagePath = '../backend/uploads/1714069297986.jpeg'; 
         displayImages([img])
         */
+
 }
 
 function displayImages(images) {
